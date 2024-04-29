@@ -1,3 +1,6 @@
+// TIL: global.d.ts file
+// https://www.typescriptlang.org/docs/handbook/declaration-files/templates/global-d-ts.html
+// means you don't have to manually import types at top of the file
 type Task = {
   id: string;
   title: string;
