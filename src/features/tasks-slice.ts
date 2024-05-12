@@ -7,6 +7,7 @@
 // indexable??
 // starting with "oh I just need this" is bad, gotta rewrite
 
+import data from '../api/data.json';
 import { PayloadAction, createSlice, nanoid } from '@reduxjs/toolkit';
 
 // this is better;
@@ -34,7 +35,7 @@ const createTask = (draftTask: DraftTask): Task => {
 };
 
 const initialState: TasksState = {
-  entities: [],
+  entities: data.tasks,
 };
 
 // everything can live inside of here

@@ -1,14 +1,21 @@
 import { useState } from 'react';
 
+import { addUser } from '../features/users-slice';
+import { useAppDispatch } from '../hooks';
+
 const CreateUser = () => {
   const [realName, setRealName] = useState('');
   const [alterEgo, setAlterEgo] = useState('');
+  const dispatch = useAppDispatch();
 
   return (
     <form
       className="create-user"
       onSubmit={(e) => {
         e.preventDefault();
+        dispatch(addUser({ realName, alterEgo }));
+        setRealName('');
+        setAlterEgo('');
       }}
     >
       <label htmlFor="new-user-real-name">
