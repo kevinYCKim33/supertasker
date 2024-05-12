@@ -9,7 +9,7 @@
 
 import data from '../api/data.json';
 import { PayloadAction, createSlice, nanoid } from '@reduxjs/toolkit';
-
+import { removeUser } from './users-slice';
 // this is better;
 // more extendable down the line
 // loading state; pagination metadata;
@@ -30,7 +30,7 @@ type TasksState = {
 // The typing for RequireOnly is too complex, but not point of exercise rn;
 type DraftTask = RequireOnly<Task, 'title'>;
 
-const createTask = (draftTask: DraftTask): Task => {
+export const createTask = (draftTask: DraftTask): Task => {
   return { id: nanoid(), ...draftTask }; // nanoid comes straight from redux toolkit!
 };
 
@@ -70,6 +70,23 @@ const tasksSlice = createSlice({
       // or at least makes it look like you're mutating
       state.entities.splice(index, 1);
     },
+  },
+  extraReducers: (builder) => {
+    // when you remove a user (an action for a different slice)
+    // you should unassign him from all of the tasks he's involved in
+    // i.e. when an employee quits, you should assign him from
+    // all the JIRA tickets
+
+    // removing a user is still just one action
+    // think of it as an action with side effects sort of...
+    builder.addCase(removeUser, (state, action) => {
+      const userId = action.payload;
+      for (const task of state.entities) {
+        if (task.user === userId) {
+          task.user = undefined;
+        }
+      }
+    });
   },
 });
 

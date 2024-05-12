@@ -7,6 +7,8 @@ type UserEditProps = {
 const UserEdit = ({ user }: UserEditProps) => {
   const id = (p: keyof User) => `edit-user-${user.id}-${p}`;
 
+  // side quest: if you edit the name of the user
+  // you should also update the names in the task assignee components
   const handleChange: ChangeEventHandler<HTMLInputElement> = (event) => {
     const { name, value } = event.target;
     console.log('Put an action here to create a user. 😝', { name, value });
