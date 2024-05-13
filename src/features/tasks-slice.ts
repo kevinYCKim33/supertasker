@@ -7,14 +7,20 @@
 // indexable??
 // starting with "oh I just need this" is bad, gotta rewrite
 
-import data from '../api/data.json';
-import { PayloadAction, createSlice, nanoid } from '@reduxjs/toolkit';
+// import data from '../api/data.json';
+import {
+  PayloadAction,
+  createAsyncThunk,
+  createSlice,
+  nanoid,
+} from '@reduxjs/toolkit';
 import { removeUser } from './users-slice';
 // this is better;
 // more extendable down the line
 // loading state; pagination metadata;
 type TasksState = {
   entities: Task[];
+  loading?: boolean; // ? just to have initial tests passing; a bit lazy sure
 };
 
 // wow! Partial<X> means take all the types in X and make them optional
@@ -35,7 +41,9 @@ export const createTask = (draftTask: DraftTask): Task => {
 };
 
 const initialState: TasksState = {
-  entities: data.tasks,
+  // entities: data.tasks,
+  entities: [],
+  loading: false,
 };
 
 // everything can live inside of here
@@ -46,6 +54,18 @@ const initialState: TasksState = {
 // no folder for reducers
 // no types to declare
 // no need for spread operators!
+
+// brilliantly easier way to handle fetching
+export const fetchTasks = createAsyncThunk(
+  'tasks/fetchTasks',
+  async (): Promise<Task[]> => {
+    const response = await fetch('/api/tasks').then((response) =>
+      response.json(),
+    );
+
+    return response.tasks;
+  },
+);
 
 // reducers, action, initialState, it's all just right here!
 // This, I totally see its magic
@@ -87,6 +107,19 @@ const tasksSlice = createSlice({
         }
       }
     });
+
+    builder.addCase(fetchTasks.pending, (state, action) => {
+      state.loading = true;
+    });
+
+    builder.addCase(fetchTasks.fulfilled, (state, action) => {
+      state.loading = false;
+      state.entities = action.payload;
+    });
+
+    // his case for why he doesn't like useReducer
+    // let's do work after the component is mounted?
+    // let's get data then mount component makes more sense < Kinney
   },
 });
 

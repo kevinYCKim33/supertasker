@@ -9,9 +9,16 @@ import data from './api/data.json';
 import './index.css';
 import { Provider } from 'react-redux';
 import store from './lib/store';
+import { fetchTasks } from './features/tasks-slice';
 
 const environment = process.env.NODE_ENV;
 makeServer({ environment });
+
+// beauty of this getting called in index.tsx
+// hey the store is already ready;
+// instead of waiting for the <Application /> to mount or whatever
+// why don't you just fetch tasks as soon as you initialize the store??
+store.dispatch(fetchTasks());
 
 const root = ReactDOM.createRoot(
   document.getElementById('root') as HTMLElement,
