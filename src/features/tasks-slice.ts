@@ -56,6 +56,7 @@ const initialState: TasksState = {
 // no need for spread operators!
 
 // brilliantly easier way to handle fetching
+// handles fulfilled, rejected, pending all in one function
 export const fetchTasks = createAsyncThunk(
   'tasks/fetchTasks',
   async (): Promise<Task[]> => {
@@ -108,10 +109,12 @@ const tasksSlice = createSlice({
       }
     });
 
+    // tasks/fetchTasks/pending
     builder.addCase(fetchTasks.pending, (state, action) => {
       state.loading = true;
     });
 
+    // tasks/fetchTasks/fulfilled
     builder.addCase(fetchTasks.fulfilled, (state, action) => {
       state.loading = false;
       state.entities = action.payload;
